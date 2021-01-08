@@ -155,7 +155,7 @@ class NoteAddUpdateActivity : AppCompatActivity() {
         alertDialogBuilder
             .setMessage(dialogMessage)
             .setCancelable(false)
-            .setPositiveButton(getString(R.string.yes)) { dialog: DialogInterface?, id: Int ->
+            .setPositiveButton(getString(R.string.yes)) { _: DialogInterface?, _: Int ->
                 if (!isDialogClose) {
                     noteAddUpdateViewModel.delete(note!!)
                     val intent = Intent()
@@ -166,7 +166,7 @@ class NoteAddUpdateActivity : AppCompatActivity() {
             }
             .setNegativeButton(
                 getString(R.string.no)
-            ) { dialog: DialogInterface, id: Int -> dialog.cancel() }
+            ) { dialog: DialogInterface, _: Int -> dialog.cancel() }
 
         val alertDialog = alertDialogBuilder.create()
         alertDialog.show()
