@@ -44,15 +44,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val noteObserver = Observer<List<Note>> {
-        if (it != null) {
-            adapter.setListNotes(it)
-        }
-    }
-
     private fun obtainViewModel(activity: AppCompatActivity): MainViewModel {
         val factory = ViewModelFactory.getInstance(activity.application)
         return ViewModelProvider(activity, factory).get(MainViewModel::class.java)
+    }
+
+    private val noteObserver = Observer<List<Note>> { noteList ->
+        if (noteList != null) {
+            adapter.setListNotes(noteList)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -72,12 +72,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showSnackbarMessage(message: String) {
-        Snackbar.make(binding?.root as View, message, Snackbar.LENGTH_SHORT).show()
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         _activityMainBinding = null
+    }
+
+    private fun showSnackbarMessage(message: String) {
+        Snackbar.make(binding?.root as View, message, Snackbar.LENGTH_SHORT).show()
     }
 }

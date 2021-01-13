@@ -124,52 +124,10 @@ class NoteAddUpdateActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_delete -> {
-                showAlertDialog(ALERT_DIALOG_DELETE)
-            }
-            android.R.id.home -> {
-                showAlertDialog(ALERT_DIALOG_CLOSE)
-            }
-            else -> {
-                return super.onOptionsItemSelected(item)
-            }
+            R.id.action_delete -> showAlertDialog(ALERT_DIALOG_DELETE)
+            android.R.id.home -> showAlertDialog(ALERT_DIALOG_CLOSE)
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun showAlertDialog(type: Int) {
-        val isDialogClose: Boolean = type == ALERT_DIALOG_CLOSE
-        val dialogTitle: String
-        val dialogMessage: String
-
-        if (isDialogClose) {
-            dialogTitle = getString(R.string.cancel)
-            dialogMessage = getString(R.string.message_cancel)
-        } else {
-            dialogMessage = getString(R.string.message_delete)
-            dialogTitle = getString(R.string.delete)
-        }
-
-        val alertDialogBuilder = AlertDialog.Builder(this)
-        alertDialogBuilder.setTitle(dialogTitle)
-        alertDialogBuilder
-            .setMessage(dialogMessage)
-            .setCancelable(false)
-            .setPositiveButton(getString(R.string.yes)) { _: DialogInterface?, _: Int ->
-                if (!isDialogClose) {
-                    noteAddUpdateViewModel.delete(note!!)
-                    val intent = Intent()
-                    intent.putExtra(EXTRA_POSITION, position)
-                    setResult(RESULT_DELETE, intent)
-                }
-                finish()
-            }
-            .setNegativeButton(
-                getString(R.string.no)
-            ) { dialog: DialogInterface, _: Int -> dialog.cancel() }
-
-        val alertDialog = alertDialogBuilder.create()
-        alertDialog.show()
     }
 
     override fun onBackPressed() {
@@ -179,6 +137,39 @@ class NoteAddUpdateActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         _activityNoteAddUpdateBinding = null
+    }
+
+    private fun showAlertDialog(type: Int) {
+        val isDialogClose = type == ALERT_DIALOG_CLOSE
+        val dialogTitle: String
+        val dialogMessage: String
+        if (isDialogClose) {
+            dialogTitle = getString(R.string.cancel)
+            dialogMessage = getString(R.string.message_cancel)
+        } else {
+            dialogMessage = getString(R.string.message_delete)
+            dialogTitle = getString(R.string.delete)
+        }
+        val alertDialogBuilder = AlertDialog.Builder(this)
+        with(alertDialogBuilder) {
+            setTitle(dialogTitle)
+            setMessage(dialogMessage)
+            setCancelable(false)
+            setPositiveButton(getString(R.string.yes)) { _, _ ->
+                if (!isDialogClose) {
+                    noteAddUpdateViewModel.delete(note as Note)
+
+                    val intent = Intent()
+                    intent.putExtra(EXTRA_POSITION, position)
+                    setResult(RESULT_DELETE, intent)
+                }
+
+                finish()
+            }
+            setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.cancel() }
+        }
+        val alertDialog = alertDialogBuilder.create()
+        alertDialog.show()
     }
 
     private fun obtainViewModel(activity: AppCompatActivity): NoteAddUpdateViewModel {
