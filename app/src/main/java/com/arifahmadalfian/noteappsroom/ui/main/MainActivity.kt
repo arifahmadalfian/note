@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arifahmadalfian.noteappsroom.R
 import com.arifahmadalfian.noteappsroom.database.Note
@@ -19,7 +20,7 @@ class MainActivity : AppCompatActivity() {
     private var _activityMainBinding: ActivityMainBinding? = null
     private val binding get() = _activityMainBinding
 
-    private lateinit var adapter: NoteAdapter
+    private lateinit var adapter: NotePagedListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         val mainViewModel = obtainViewModel(this@MainActivity)
         mainViewModel.getAllNotes().observe(this, noteObserver)
 
-        adapter = NoteAdapter(this@MainActivity)
+        adapter = NotePagedListAdapter(this@MainActivity)
 
         binding?.rvNotes?.layoutManager = LinearLayoutManager(this)
         binding?.rvNotes?.setHasFixedSize(true)
@@ -49,9 +50,9 @@ class MainActivity : AppCompatActivity() {
         return ViewModelProvider(activity, factory).get(MainViewModel::class.java)
     }
 
-    private val noteObserver = Observer<List<Note>> { noteList ->
+    private val noteObserver = Observer<PagedList<Note>> { noteList ->
         if (noteList != null) {
-            adapter.setListNotes(noteList)
+            adapter.submitList(noteList)
         }
     }
 
